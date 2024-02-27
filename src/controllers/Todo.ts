@@ -1,34 +1,30 @@
-// todoController.ts
-
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import Todo from '../models/Todo';
-import Logging from '../library/logging'; 
 
-export const createTodo = async (req: Request, res: Response) => {
+// Create Todo
+export const createTodo = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { title, description } = req.body;
     const todo = new Todo({ title, description });
     await todo.save();
     res.status(201).json(todo);
   } catch (error) {
-    Logging.error(error);
-    res.status(500).json({ message: 'Server Error' });
+    next(error);
   }
 };
 
 // Read All Todos
-export const getAllTodos = async (req: Request, res: Response) => {
+export const getAllTodos = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const todos = await Todo.find();
     res.json(todos);
   } catch (error) {
-    Logging.error(error);
-    res.status(500).json({ message: 'Server Error' });
+    next(error);
   }
 };
 
 // Read Todo by ID
-export const getTodoById = async (req: Request, res: Response) => {
+export const getTodoById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const todo = await Todo.findById(req.params.id);
     if (!todo) {
@@ -36,13 +32,12 @@ export const getTodoById = async (req: Request, res: Response) => {
     }
     res.json(todo);
   } catch (error) {
-    Logging.error(error);
-    res.status(500).json({ message: 'Server Error' });
+    next(error);
   }
 };
 
 // Update Todo
-export const updateTodo = async (req: Request, res: Response) => {
+export const updateTodo = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { title, description, completed } = req.body;
     const todo = await Todo.findByIdAndUpdate(req.params.id, { title, description, completed }, { new: true });
@@ -51,13 +46,12 @@ export const updateTodo = async (req: Request, res: Response) => {
     }
     res.json(todo);
   } catch (error) {
-    Logging.error(error);
-    res.status(500).json({ message: 'Server Error' });
+    next(error);
   }
 };
 
 // Delete Todo
-export const deleteTodo = async (req: Request, res: Response) => {
+export const deleteTodo = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const todo = await Todo.findByIdAndDelete(req.params.id);
     if (!todo) {
@@ -65,7 +59,6 @@ export const deleteTodo = async (req: Request, res: Response) => {
     }
     res.json({ message: 'Todo deleted successfully' });
   } catch (error) {
-    Logging.error(error);
-    res.status(500).json({ message: 'Server Error' });
+    next(error);
   }
 };

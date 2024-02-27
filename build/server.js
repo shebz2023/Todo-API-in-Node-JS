@@ -9,10 +9,12 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const config_1 = require("./config/config");
 const logging_1 = __importDefault(require("./library/logging"));
 const Todo_1 = __importDefault(require("./routes/Todo"));
+const auth_1 = __importDefault(require("./routes/auth"));
+const authenticate_1 = require("./middleware/authenticate");
 const app = (0, express_1.default)();
-// Connect to MongoDB
+// connect to mongo
 mongoose_1.default
-    .connect(config_1.config.mongo.url, { useNewUrlParser: true, useUnifiedTopology: true })
+    .connect(config_1.config.mongo.url)
     .then(() => {
     logging_1.default.info('Connected to MongoDB');
     StartServer();
@@ -43,8 +45,9 @@ app.use((req, res, next) => {
 });
 // Health check route
 app.get('/ping', (req, res) => res.status(200).json({ message: 'pong' }));
-// Register Todo routes with the '/todos' prefix
-app.use('/todos', Todo_1.default);
+// Register routes
+app.use('/auth', auth_1.default);
+app.use('/todos', authenticate_1.authenticate, Todo_1.default); // Apply authenticate middleware to todos routes
 // Error handling middleware
 app.use((req, res, next) => {
     const error = new Error('Not found');
