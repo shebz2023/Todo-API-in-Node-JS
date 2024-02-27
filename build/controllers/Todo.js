@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteTodo = exports.updateTodo = exports.getTodoById = exports.getAllTodos = exports.createTodo = void 0;
 const Todo_1 = __importDefault(require("../models/Todo"));
+// Create Todo
 const createTodo = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { title, description } = req.body;

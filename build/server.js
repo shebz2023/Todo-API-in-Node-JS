@@ -47,7 +47,7 @@ app.use((req, res, next) => {
 app.get('/ping', (req, res) => res.status(200).json({ message: 'pong' }));
 // Register routes
 app.use('/auth', auth_1.default);
-app.use('/todos', authenticate_1.authenticate, Todo_1.default); // Apply authenticate middleware to todos routes
+app.use('/todos', authenticate_1.authenticate, Todo_1.default);
 // Error handling middleware
 app.use((req, res, next) => {
     const error = new Error('Not found');
