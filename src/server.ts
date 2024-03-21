@@ -5,7 +5,8 @@ import { config } from './config/config';
 import Logging from './library/logging';
 import todoRoutes from './routes/Todo';
 import authRoutes from './routes/auth'; 
-import { authenticate } from './middleware/authenticate';  
+import { authenticate } from './middleware/authenticate';
+import cors from 'cors'  
 
 const app = express();
 // connect to mongo
@@ -34,17 +35,8 @@ app.use((req, res, next) => {
 // Parse incoming requests with JSON payloads
 app.use(express.json());
 
-// Additional middleware for CORS
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-
-  if (req.method === 'OPTIONS') {
-    res.header('Access-Control-Allow-Methods', 'PUT, POST, PATCH, DELETE, GET');
-    return res.status(200).json({});
-  }
-  next();
-});
+//  CORS
+app.use(cors())
 
 // Health check route
 app.get('/ping', (req, res) => res.status(200).json({ message: 'pong' }));

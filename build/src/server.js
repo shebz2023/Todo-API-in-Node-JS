@@ -10,6 +10,8 @@ const config_1 = require("./config/config");
 const logging_1 = __importDefault(require("./library/logging"));
 const Todo_1 = __importDefault(require("./routes/Todo"));
 const auth_1 = __importDefault(require("./routes/auth"));
+const authenticate_1 = require("./middleware/authenticate");
+const cors_1 = __importDefault(require("cors"));
 const app = (0, express_1.default)();
 // connect to mongo
 mongoose_1.default
@@ -32,21 +34,13 @@ app.use((req, res, next) => {
 });
 // Parse incoming requests with JSON payloads
 app.use(express_1.default.json());
-// Additional middleware for CORS
-app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-    if (req.method === 'OPTIONS') {
-        res.header('Access-Control-Allow-Methods', 'PUT, POST, PATCH, DELETE, GET');
-        return res.status(200).json({});
-    }
-    next();
-});
+//  CORS
+app.use((0, cors_1.default)());
 // Health check route
 app.get('/ping', (req, res) => res.status(200).json({ message: 'pong' }));
 // Register routes
 app.use('/auth', auth_1.default);
-app.use('/todos', Todo_1.default);
+app.use('/todos', authenticate_1.authenticate, Todo_1.default);
 // Error handling middleware
 app.use((req, res, next) => {
     const error = new Error('Not found');
