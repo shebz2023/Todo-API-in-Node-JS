@@ -36,7 +36,16 @@ app.use((req, res, next) => {
 app.use(express.json());
 
 //  CORS
-app.use(cors())
+const allowedHeaders = ['Content-Type', 'Authorization', 'x-auth-token'];
+
+// Configure CORS options with allowed headers
+const corsOptions = {
+  origin: 'http://localhost:3000',
+  allowedHeaders: allowedHeaders.join(', '), 
+};
+
+// Enable CORS middleware with options
+app.use(cors(corsOptions));
 
 // Health check route
 app.get('/ping', (req, res) => res.status(200).json({ message: 'pong' }));
